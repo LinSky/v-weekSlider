@@ -22,6 +22,7 @@ export default {
         return {
             dates: [],
             direction: null,
+            activeIndex: 1,
             start: {
                 x: null,
                 y: null
@@ -76,7 +77,7 @@ export default {
             vm.end.y = touch.pageY
             vm.distan.x = vm.end.x - vm.start.x
             vm.distan.y = vm.end.y - vm.start.y   
-            vm.dates[1].translate = vm.distan.x
+            vm.dates[vm.activeIndex].translate = vm.distan.x
         },
 
         /**
@@ -92,21 +93,24 @@ export default {
 
             vm.getTouchDirection(vm.distan.x, vm.distan.y)
             if (vm.direction === 'left') {
-                
-                // vm.dates[1].translate = -100
-                // vm.dates[2].translate = 0
-                setTimeout(()=>{
-                    vm.dates.splice(0, 1)
-                    vm.dates.push({
-                        date: moment(vm.dates[1].date).add(7, 'd').format('YYYY-MM-DD'),
-                        translate: 100
-                    })
-                }, 2000)
-                
+                vm.dates[vm.activeIndex + 1].translate = 0
+                vm.dates[vm.activeIndex].translate = -100
+                vm.dates.push({
+                    date: moment(vm.dates[vm.activeIndex + 1].date).add(7, 'd').format('YYYY-MM-DD'),
+                    translate: 100
+                })
+                vm.$el.children[0].removeChild(vm.$el.children[0].children[0])
+                vm.activeIndex++
+        
             } else if (vm.direction === 'right') {
-                vm.dates[1].translate = 100
-                vm.dates[0].translate = 0
-                //vm.dates.splice(2, 1)
+                vm.dates[vm.activeIndex - 1].translate = 0
+                vm.dates[vm.activeIndex].translate = 100
+                vm.dates.unshift({
+                    date: moment(vm.dates[vm.activeIndex - 1].date).subtract(7, 'd').format('YYYY-MM-DD'),
+                    translate: -100
+                })
+                vm.$el.children[0].removeChild(vm.$el.children[0].lastChild)
+                vm.activeIndex--
             } else{
                 vm.dates[1].translate = 0
             }
