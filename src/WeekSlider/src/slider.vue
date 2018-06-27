@@ -1,5 +1,5 @@
 <template>
-    <div class="slider">
+    <div class="slider" :style="styleObject">
        <div class="day" v-for="(item, index) in days" :key="item.date">
            <div :class="{today: item.isToday, sameDay: item.isDay && !item.isToday}">{{item.week}}<br><strong>{{item.date.split('-')[2]}}</strong></div>
         </div>
@@ -18,7 +18,19 @@ export default {
         defaultDate: {
             type: String,
             required: true,
+        },
+        translate: {
+            type: Number,
+            required: true
         }
+    },
+    watch: {
+        // translate: {
+        //     handler (val) {
+        //         console.log(val)
+        //     },
+        //     deep: true
+        // }
     },
     computed: {
         days: function () {
@@ -40,6 +52,12 @@ export default {
             }
 
             return arr
+        },
+        styleObject: function () {
+            let vm = this
+            return {
+                transform: Math.abs(vm.translate) === 100 ? 'translateX(' + vm.translate + '%)' : 'translateX(' + vm.translate + 'px)'
+            }
         }
     },
     data () {
@@ -47,17 +65,18 @@ export default {
 
         }
     }
+    
 }
 </script>
 <style lang="less" scoped>
 .slider{
-    height: 48px; display: flex;
+    height: 48px; width: 100%; display: flex; position: absolute; top: 0; left: 0; overflow: hidden; transition: transform 0.5s ease-out; 
     .day{
         flex: 1;
         div{
             height: 36px; width: 48px; padding: 6px 0; margin: auto; text-align: center; line-height: 18px; font-size: 12px;
             &.today{
-                border-radius: 50%; background-color: #dd3629; color: #FFF;
+                border-radius: 50%; background-color: #dd3629; color: #FFF; 
             }
             &.sameDay{
                 border-radius: 50%; background-color: #999; color: #FFF;
