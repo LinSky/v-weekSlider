@@ -1,6 +1,6 @@
 <template>
     <div>
-        <week-slider></week-slider>
+        <week-slider @dateClick="dateClickhandler"></week-slider>
     </div>
 </template>
 
@@ -9,6 +9,12 @@ export default {
     name: 'app',
     data () {
         return {
+
+        }
+    },
+    methods: {
+        dateClickhandler (date) {
+            console.log(date);
         }
     }
 }
