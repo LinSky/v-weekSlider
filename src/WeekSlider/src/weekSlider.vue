@@ -147,15 +147,9 @@ export default {
             vm.getTouchDirection(vm.distan.x, vm.distan.y)
             if (vm.direction === 'left') {
                 vm.activeIndex = 2
-                // vm.dates.push({
-                //     date: moment(vm.dates[vm.activeIndex].date).add(7, 'd').format('YYYY-MM-DD')
-                // })
-                // vm.dates.shift()
-                // vm.activeIndex = 1
             } else if (vm.direction === 'right') {
                 vm.activeIndex = 0
 
-            } else{
             }
             vm.distan.x = 0
             vm.distan.y = 0
@@ -170,6 +164,12 @@ export default {
                     date: moment(vm.dates[vm.activeIndex].date).add(7, 'd').format('YYYY-MM-DD')
                 })
                 vm.dates.shift()
+                vm.activeIndex = 1
+            }else if (index === 1 && this.activeIndex === 0) {
+                vm.dates.unshift({
+                    date: moment(vm.dates[vm.activeIndex].date).subtract(7, 'd').format('YYYY-MM-DD')
+                })
+                vm.dates.pop()
                 vm.activeIndex = 1
             }
         },
