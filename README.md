@@ -20,5 +20,5 @@ npm install --save v-week-slider
 
 ## events
 |名称|说明|回调参数|
-|:----    |:---|:----- |-----   |
+|:----    |:---|:----- |
 | dateClick  | 点击日期触发时间  |  点击的日期（YYYY-MM-DD） |
