@@ -15,7 +15,7 @@ npm install --save v-week-slider
 ## Props
 |prop|必选|类型|说明|
 |:----    |:---|:----- |-----   |
-|defaultDate   | false  | Boolean  | 指定日期，默认今天，YYYY-MM-DD |
+|defaultDate   | false  | String  | 指定日期，默认今天，YYYY-MM-DD |
 | showYear  | false  | Boolean  | 是否显示当前周所属年月，默认false  |
 
 ## events
