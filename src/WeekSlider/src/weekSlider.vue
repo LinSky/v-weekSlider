@@ -1,21 +1,24 @@
 <template>
-    <div class="week-slider">
-        <div
-            class="sliders"
-            ref="sliders"
-            @touchstart="touchstartHandle"
-            @touchmove="touchmoveHandle"
-            @touchend="touchendHandle">
-            <template v-for="(item, index) in dates">
-                <div class="slider"
-                    :style="getTransform(index)"
-                    @webkit-transition-end="onTransitionEnd(index)"
-                    @transitionend="onTransitionEnd(index)">
-                    <div class="day" v-for="(day, dayIndex) in getDaies(item.date)">
-                        <div @click="dayClickHandle(day.date)" :class="{today: day.isToday, sameDay: day.isDay && !day.isToday}">{{day.week}}<br><strong>{{day.date.split('-')[2]}}</strong></div>
+    <div class="">
+        <div class="year_str" v-if="showYear">{{yearMonthStr}}</div>
+        <div class="week-slider">
+            <div
+                class="sliders"
+                ref="sliders"
+                @touchstart="touchstartHandle"
+                @touchmove="touchmoveHandle"
+                @touchend="touchendHandle">
+                <template v-for="(item, index) in dates">
+                    <div class="slider"
+                        :style="getTransform(index)"
+                        @webkit-transition-end="onTransitionEnd(index)"
+                        @transitionend="onTransitionEnd(index)">
+                        <div class="day" v-for="(day, dayIndex) in getDaies(item.date)">
+                            <div @click.stop="dayClickHandle(day.date)" :class="{today: day.isToday, sameDay: day.isDay && !day.isToday}">{{day.week}}<br><strong>{{day.date.split('-')[2]}}</strong></div>
+                        </div>
                     </div>
-                </div>
-            </template>
+                </template>
+            </div>
         </div>
     </div>
 </template>
@@ -28,6 +31,10 @@ export default {
         defaultDate: {
             type: String,
             default: moment().format('YYYY-MM-DD')
+        },
+        showYear: {
+            type: Boolean,
+            default: false
         }
     },
     data () {
@@ -36,6 +43,7 @@ export default {
             direction: null,
             activeIndex: 1,
             isAnimation: false,
+            yearMonthStr: '',
             start: {
                 x: null,
                 y: null
@@ -50,22 +58,28 @@ export default {
             }
         }
     },
-    computed: {
-
+    computed: {},
+    watch: {
+        dates: {
+            handler: function (newVal, oldVal) {
+                this.yearMonthStr = moment(newVal[1].date).format('YYYY-MM')
+            }
+        },
+        deep: true
     },
     created () {
         let vm = this
         this.dates.push(
-                {
-                    date: moment(vm.defaultDate).subtract(7, 'd').format('YYYY-MM-DD'),
-                },
-                {
-                    date: vm.defaultDate,
-                },
-                {
-                    date: moment(vm.defaultDate).add(7, 'd').format('YYYY-MM-DD'),
-                }
-            )
+            {
+                date: moment(vm.defaultDate).subtract(7, 'd').format('YYYY-MM-DD'),
+            },
+            {
+                date: vm.defaultDate,
+            },
+            {
+                date: moment(vm.defaultDate).add(7, 'd').format('YYYY-MM-DD'),
+            }
+        )
     },
     methods: {
         /**
@@ -76,21 +90,22 @@ export default {
                 arr = []
             let weekOfDate = Number(moment(date).format('E'))
             let weeks = ['日', '一', '二', '三', '四', '五', '六']
-            let today = moment(vm.defaultDate)
+            let today = moment()
+            let defaultDay = moment(vm.defaultDate)
             for (var i = 0; i < 7; i++) {
                 let _theDate = moment(date).subtract(weekOfDate - i, 'd')
                 arr.push({
                     date: _theDate.format('YYYY-MM-DD'),
                     week: weeks[i],
                     isToday: _theDate.format('YYYY-MM-DD') === today.format('YYYY-MM-DD'),
-                    isDay: _theDate.format('E') === today.format('E')
+                    isDay: _theDate.format('E') === defaultDay.format('E')
                 })
             }
             return arr
         },
 
         /**
-        *
+        *根据索引计算出样式
         */
         getTransform (index) {
             let vm = this
@@ -204,8 +219,11 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.year_str{
+    height: 36px; border-bottom: #ddd solid 1px; line-height: 36px; text-align: center;
+}
 .week-slider{
-    width: 100%; height: 48px; overflow: hidden;
+    width: 100%; height: 48px; overflow: hidden; padding: 10px 0;
     .sliders{
         position: relative;
         .slider{

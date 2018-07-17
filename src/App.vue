@@ -1,6 +1,6 @@
 <template>
     <div>
-        <week-slider @dateClick="dateClickhandler"></week-slider>
+        <week-slider @dateClick="dateClickhandler" :showYear="true" defaultDate="2018-07-18"></week-slider>
     </div>
 </template>
 
