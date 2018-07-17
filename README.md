@@ -9,7 +9,11 @@ npm install --save v-week-slider
 
 ## 使用
 ```html
-<week-slider @dateClick="dateClickhandler" :showYear="true"></week-slider>
+import weekSlider from 'v-week-slider'
+
+Vue.use(weekSlider)
+
+<week-slider></week-slider>
 ```   
 
 ## Props
