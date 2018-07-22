@@ -1,7 +1,7 @@
 <template>
     <div class="">
         <div class="year_str" v-if="showYear">{{yearMonthStr}}</div>
-        <div class="week-slider">
+        <div class="week-slider" v-if="reset">
             <div
                 class="sliders"
                 ref="sliders"
@@ -55,7 +55,9 @@ export default {
             distan: {
                 x: 0,
                 y: 0
-            }
+            },
+            sliderWidth: 0,
+            reset: true,
         }
     },
     computed: {},
@@ -66,6 +68,9 @@ export default {
             }
         },
         deep: true
+    },
+    mounted () {
+        this.sliderWidth = this.$refs.sliders.offsetWidth
     },
     created () {
         let vm = this
@@ -93,7 +98,7 @@ export default {
             let today = moment()
             let defaultDay = moment(vm.defaultDate)
             for (var i = 0; i < 7; i++) {
-                let _theDate = moment(date).subtract(weekOfDate - i, 'd')
+                let _theDate = moment(date).subtract(weekOfDate - i - 7, 'd')
                 arr.push({
                     date: _theDate.format('YYYY-MM-DD'),
                     week: weeks[i],
@@ -119,7 +124,7 @@ export default {
             if (index > vm.activeIndex) {
                 style['transform'] = 'translateX(100%)'
             }
-            style['transition'] = vm.isAnimation ? 'transform 0.5s ease-out' : 'transform 0s ease-out'
+            style['transition'] = vm.isAnimation ? 'transform 0.5s ease-out' : 'none'
             return style
         },
 
@@ -141,10 +146,18 @@ export default {
         touchmoveHandle (event) {
             let vm = this,
                 touch = event.touches[0]
+            vm.isAnimation = true
             vm.end.x = touch.pageX
             vm.end.y = touch.pageY
             vm.distan.x = vm.end.x - vm.start.x
             vm.distan.y = vm.end.y - vm.start.y
+            let dom = vm.distan.x < 0 ? this.$refs.sliders.children[2] : this.$refs.sliders.children[0]
+            if (vm.distan.x < 0) {
+                dom.style['transform'] = 'translateX('+ (vm.sliderWidth + vm.distan.x) +'px)'
+            }else {
+                dom.style['transform'] = 'translateX('+ (-vm.sliderWidth + vm.distan.x) +'px)'
+            }
+
         },
 
         /**
@@ -165,6 +178,10 @@ export default {
             } else if (vm.direction === 'right') {
                 vm.activeIndex = 0
 
+            } else {
+                for (var i = 0; i < this.$refs.sliders.children.length; i++) {
+                    this.$refs.sliders.children[i].style['transform'] = 'translateX('+ (i*100 - 100) +'%)'
+                }
             }
             vm.distan.x = 0
             vm.distan.y = 0
