@@ -97,8 +97,11 @@ export default {
             let weeks = ['日', '一', '二', '三', '四', '五', '六']
             let today = moment()
             let defaultDay = moment(vm.defaultDate)
+            if (weekOfDate === 7) {
+                weekOfDate = 0
+            }
             for (var i = 0; i < 7; i++) {
-                let _theDate = moment(date).subtract(weekOfDate - i - 7, 'd')
+                let _theDate = moment(date).subtract(weekOfDate - i, 'd')
                 arr.push({
                     date: _theDate.format('YYYY-MM-DD'),
                     week: weeks[i],
