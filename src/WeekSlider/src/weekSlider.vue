@@ -13,8 +13,13 @@
                         :style="getTransform(index)"
                         @webkit-transition-end="onTransitionEnd(index)"
                         @transitionend="onTransitionEnd(index)">
-                        <div class="day" v-for="(day, dayIndex) in getDaies(item.date)">
-                            <div @click.stop="dayClickHandle(day.date)" :class="{today: day.isToday, sameDay: day.isDay && !day.isToday}">{{day.week}}<br><strong>{{day.date.split('-')[2]}}</strong></div>
+                        <div class="day" v-for="day in getDaies(item.date)">
+                            <div 
+                                @click.stop="dayClickHandle(day.date)"
+                                :style="{backgroundColor: day.isToday ? todayBgColor : day.isDay ? activeBgColor : '', color: day.isToday ? todayTxtColor : day.isDay ? activeTxtColor : ''}"
+                                >
+                                {{day.week}}<br><strong>{{day.date.split('-')[2]}}</strong>
+                            </div>
                         </div>
                     </div>
                 </template>
@@ -35,6 +40,22 @@ export default {
         showYear: {
             type: Boolean,
             default: false
+        },
+        activeBgColor: {
+            type: String,
+            default: 'rgba(182, 30, 40, .5)'
+        },
+        todayBgColor: {
+            type: String,
+            default: 'rgba(182, 30, 40, 1)'
+        },
+        activeTxtColor: {
+            type: String,
+            default: 'rgba(255, 255, 255, 1)'
+        },
+        todayTxtColor: {
+            type: String,
+            default: 'rgba(255, 255, 255, 1)'
         }
     },
     data () {
@@ -60,14 +81,13 @@ export default {
             reset: true,
         }
     },
-    computed: {},
     watch: {
         dates: {
             handler: function (newVal, oldVal) {
                 this.yearMonthStr = moment(newVal[1].date).format('YYYY-MM')
-            }
-        },
-        deep: true
+            },
+            deep: true
+        }
     },
     mounted () {
         this.sliderWidth = this.$refs.sliders.offsetWidth
@@ -127,7 +147,7 @@ export default {
             if (index > vm.activeIndex) {
                 style['transform'] = 'translateX(100%)'
             }
-            style['transition'] = vm.isAnimation ? 'transform 0.5s ease-out' : 'none'
+            style['transition'] = vm.isAnimation ? 'transform .5s ease-out' : 'none'
             return style
         },
 
@@ -233,6 +253,7 @@ export default {
 
         dayClickHandle (date) {
             this.$emit('dateClick', date)
+            this.$emit('update:defaultDate', date)
         }
 
     }
@@ -251,12 +272,9 @@ export default {
             .day{
                 flex: 1;
                 div{
-                    height: 36px; width: 48px; padding: 6px 0; margin: auto; text-align: center; line-height: 18px; font-size: 12px;
-                    &.today{
-                        border-radius: 50%; background-color: #dd3629; color: #FFF;
-                    }
+                    height: 36px; width: 48px; padding: 6px 0; margin: auto; text-align: center; line-height: 18px; font-size: 12px; border-radius: 50%;
                     &.sameDay{
-                        border-radius: 50%; background-color: #999; color: #FFF;
+                        background-color: #999; color: #FFF;
                     }
                     strong{
                         font-size: 14px;

@@ -16,14 +16,18 @@ import weekSlider from 'v-week-slider'
 
 Vue.use(weekSlider)
 
-<week-slider></week-slider>
+<week-slider @dateClick="dateClickhandler" :showYear="true" :defaultDate.sync="default_date"></week-slider>
 ```   
 
 ## Props
 |prop|必选|类型|说明|
 |:----    |:---|:----- |-----   |
-|defaultDate   | false  | String  | 指定日期，默认今天，YYYY-MM-DD |
+| defaultDate   | false  | String  | 指定日期，默认今天，YYYY-MM-DD |
 | showYear  | false  | Boolean  | 是否显示当前周所属年月，默认false  |
+| activeBgColor  | false  | String  | 指定日期背景颜色，，默认'rgba(182, 30, 40, .5)'  |
+| todayBgColor  | false  | String  | 今天背景颜色，默认'rgba(182, 30, 40, 1)' |
+| activeTxtColor  | false  | String  | 指定日期文字颜色，默认'rgba(255, 255, 255, 1)'  |
+| todayTxtColor  | false  | String  | j今天文字颜色，默认'rgba(255, 255, 255, 1)'  |
 
 ## events
 |名称|说明|回调参数|
