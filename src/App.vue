@@ -1,16 +1,21 @@
 <template>
     <div>
-        <week-slider @dateClick="dateClickhandler" :showYear="true" :defaultDate.sync="default_date"></week-slider>
+        <week-slider
+			@dateClick="dateClickhandler"
+      todayTxtColor='#ff0000'
+			:showYear="true"
+			:defaultDate.sync="default_date">
+		</week-slider>
     </div>
 </template>
 
 <script>
 export default {
     name: 'app',
-    
+
     data () {
         return {
-            default_date: '2019-02-25'
+            default_date: '2019-04-12'
         }
     },
     methods: {

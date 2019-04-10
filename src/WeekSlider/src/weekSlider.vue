@@ -1,7 +1,7 @@
 <template>
-    <div class="">
+    <div>
         <div class="year_str" v-if="showYear">{{yearMonthStr}}</div>
-        <div class="week-slider" v-if="reset">
+        <div class="week-slider">
             <div
                 class="sliders"
                 ref="sliders"
@@ -14,10 +14,9 @@
                         @webkit-transition-end="onTransitionEnd(index)"
                         @transitionend="onTransitionEnd(index)">
                         <div class="day" v-for="day in getDaies(item.date)">
-                            <div 
-                                @click.stop="dayClickHandle(day.date)"
-                                :style="{backgroundColor: day.isToday ? todayBgColor : day.isDay ? activeBgColor : '', color: day.isToday ? todayTxtColor : day.isDay ? activeTxtColor : ''}"
-                                >
+                            <div
+								@click.stop="dayClickHandle(day.date)"
+								:style="buildDateStyle(day.isToday, day.isDay)">
                                 {{day.week}}<br><strong>{{day.date.split('-')[2]}}</strong>
                             </div>
                         </div>
@@ -43,20 +42,22 @@ export default {
         },
         activeBgColor: {
             type: String,
-            default: 'rgba(182, 30, 40, .5)'
+            default: 'rgba(182, 30, 40, 1)'
         },
         todayBgColor: {
-            type: String,
-            default: 'rgba(182, 30, 40, 1)'
+            type: String
         },
         activeTxtColor: {
             type: String,
             default: 'rgba(255, 255, 255, 1)'
         },
         todayTxtColor: {
-            type: String,
-            default: 'rgba(255, 255, 255, 1)'
-        }
+			type: String
+		},
+		lang: {
+			type: String,
+			default: 'ch'
+		}
     },
     data () {
         return {
@@ -77,8 +78,11 @@ export default {
                 x: 0,
                 y: 0
             },
-            sliderWidth: 0,
-            reset: true,
+			sliderWidth: 0,
+			weekLanguages: {
+				ch: ['日', '一', '二', '三', '四', '五', '六'],
+				en: ['Sun', 'Mon', 'Tue', 'Wed', 'Thur', 'Fri', 'Sat']
+			}
         }
     },
     watch: {
@@ -88,7 +92,15 @@ export default {
             },
             deep: true
         }
-    },
+	},
+	computed: {
+		todayStyle: function () {
+			let vm = this
+			return {
+				color: vm.todayTxtColor ? vm.todayTxtColor : ''
+			}
+		}
+	},
     mounted () {
         this.sliderWidth = this.$refs.sliders.offsetWidth
     },
@@ -114,7 +126,7 @@ export default {
             let vm = this,
                 arr = []
             let weekOfDate = Number(moment(date).format('E'))
-            let weeks = ['日', '一', '二', '三', '四', '五', '六']
+            let weeks = vm.weekLanguages[vm.lang]
             let today = moment()
             let defaultDay = moment(vm.defaultDate)
             if (weekOfDate === 7) {
@@ -254,8 +266,27 @@ export default {
         dayClickHandle (date) {
             this.$emit('dateClick', date)
             this.$emit('update:defaultDate', date)
-        }
+		},
 
+		/**
+		 *生成日期样式
+		 */
+		buildDateStyle (isToday, isActive) {
+			let vm = this
+			let res = {}
+
+			if (isToday) {
+				res.color = vm.todayTxtColor || ''
+				res.backgroundColor = vm.todayBgColor || ''
+			}
+
+			if (isActive) {
+				res.color = vm.activeTxtColor || ''
+				res.backgroundColor = vm.activeBgColor || ''
+			}
+
+			return res
+		}
     }
 }
 </script>
